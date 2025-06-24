@@ -48,7 +48,7 @@ Kẻ tấn công có thể sử dụng các chuỗi trong URL hoặc trường n
 
 > Ví dụ:
 
-![](23-06-52.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-06-52.png?raw=true)
 
 Yêu cầu một URL như ví dụ trên sẽ cố gắng để máy chủ trả về một tệp hệ thống nhạy cảm.
 
