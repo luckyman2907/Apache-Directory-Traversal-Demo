@@ -13,7 +13,7 @@
 
 ### 1.1. Khái niệm
 
-Directory Traversal là một lỗ hổng web cho phép kẻ tấn công đọc các file không mong muốn trên server. Nó dẫn đến việc bị lộ thông tin nhạy cảm của ứng dụng như thông tin đăng nhập , một số file hoặc thư mục của hệ điều hành. Trong một số trường hợp cũng có thể ghi vào các files trên server, cho phép kẻ tấn công có thể thay đổi dữ liệu hay thậm chí là chiếm quyền điều khiển server.
+**Directory Traversal** là một lỗ hổng web cho phép kẻ tấn công đọc các file không mong muốn trên server. Nó dẫn đến việc bị lộ thông tin nhạy cảm của ứng dụng như thông tin đăng nhập , một số file hoặc thư mục của hệ điều hành. Trong một số trường hợp cũng có thể ghi vào các files trên server, cho phép kẻ tấn công có thể thay đổi dữ liệu hay thậm chí là chiếm quyền điều khiển server.
 
 Máy chủ web cung cấp hai cấp độ cơ chế bảo mật chính:
 - **Danh sách kiểm soát truy cập**: được sử dụng trong quá trình cấp phép. Đây là danh sách mà người quản trị máy chủ web sử dụng để chỉ ra người dùng hoặc nhóm nào có thể truy cập, sửa đổi hoặc thực thi các tệp cụ thể trên máy chủ, cũng như các quyền truy cập khác.
@@ -32,7 +32,7 @@ Một số tệp hệ thống có thể bị tấn công:
 
 ### 1.2. Phân loại
 
-Lỗ hổng Path Traversal có thể được phân loại thành hai loại chính:
+Lỗ hổng **Path Traversal** có thể được phân loại thành hai loại chính:
 - **Path Traversal dựa trên đường dẫn tương đối**: Kẻ tấn công sử dụng các ký tự đặc biệt như `../` để điều hướng lên thư mục cha hoặc qua các thư mục khác, vượt qua giới hạn ban đầu. Ví dụ: `../../../etc/passwd`.
 - **Path Traversal dựa trên đường dẫn tuyệt đối**: Kẻ tấn công cung cấp đường dẫn tuyệt đối hoặc một phần của đường dẫn tuyệt đối, bao gồm cả thư mục gốc, để truy cập vào các tệp tin và thư mục ngoài phạm vi. Ví dụ: `/etc/passwd` hoặc `/var/www/html/../../etc/passwd`.
 
