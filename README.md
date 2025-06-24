@@ -72,7 +72,7 @@ Lợi dụng chức năng upload album ảnh để đọc nội dung tập tin b
 
 Cấu trúc thư mục
 
-![](23-18-30.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-18-30.png?raw=true)
 
 - Thư mục configs: chứa các config của Apache web server. Trong đó có 2 file *000-default.conf* và *apache2.conf*.
 
@@ -82,7 +82,7 @@ Cấu trúc thư mục
    - Đường dẫn thường là `/etc/apache2/sites-available/000-default.conf`.
    - Virtual Host trong tệp này xác định cách Apache xử lý các yêu cầu HTTP khi chưa có cấu hình cụ thể nào khác được áp dụng.
 
-   ![](23-24-49.png)
+   ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-24-49.png?raw=true)
 
 2. **apache2.conf**
    
@@ -103,91 +103,91 @@ Cấu trúc thư mục
      - Cấu hình Virtual Host và các tệp liên quan (ports.conf, sites-enabled).
      - Bảo mật bổ sung cho các thư mục tải lên hoặc ngăn thực thi mã độc hại.
 
-    ![](23-29-54.png)
+    ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-29-54.png?raw=true)
 
     - Thư mục src: chứa mã nguồn của trang web
     - Dockerfile: là một tệp văn bản được sử dụng để định nghĩa cách xây dựng một 
 
-    ![](23-31-01.png)
+    ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-31-01.png?raw=true)
 
 Hệ thống giả lập được build lên như sau:
 
-![](23-31-38.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-31-38.png?raw=true)
 
 - Ánh xạ port 80 trong container sang port 8081 của maý chính
 - Truy cập `localhost:8081` hoặc `127.0.0.1:8080` , trong khi ứng dụng bên trong container đang chạy trên port 80.
   
-![](23-32-39.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-32-39.png?raw=true)
 
 - Đây là một website cho phép upload album ảnh và xem ảnh từ các album này
 - Xem ảnh từ album free có sẵn
   
-  ![](23-34-04.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-34-04.png?raw=true)
 
 - Ngoài ra , đối với người sử dụng trang web, có thể tự tạo album của riêng mình, upload lên server, lưu trữ và xem các ảnh trong album của mình
   
-  ![](23-34-40.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-34-40.png?raw=true)
 
-  ![](23-35-04.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-35-04.png?raw=true)
 
 - Xem ảnh vừa upload lên album
   
-  ![](23-36-09.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-36-09.png?raw=true)
 
 - Đầu tiên, ta kiểm tra thử xem liệu chúng ta có thể upload và thực thi file php hay không bằng cách tạo một file tên *exploit.php* với nội dung là `<?php phpinfo(); ?>` và upload lên website.
   - Upload thành công nhưng file *exploit.php* không được thực thi mà hiển thị dưới dạng text
   
-  ![](23-38-21.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-38-21.png?raw=true)
 
-  ![](23-38-46.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-38-46.png?raw=true).
 
   - Nguyên nhân là do trong folder `configs` đã cấu hình trong file *apache2.conf* mặc định không xử lí cho tất cả các file nằm trong đường dẫn `/var/www/html/upload/`. Một số ngoại lệ như các file `.jpg`, `.png` được hiển thị dạng ảnh, các file `.html`, `.txt`, `.php` hiển thị dạng text
 
-  ![](23-40-46.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-40-46.png?raw=true)
 
   - Lúc này ta đặt ra giả thuyết rằng liệu có thể upload vào thư mục khác có khả năng thực thi code php hay không? Cụ thể là **DocumentRoot**, nơi thực thi được file `index.php`, điều này cũng được thấy rõ trong Dockerfile
 
-  ![](23-41-44.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-41-44.png?raw=true)
 
   - Phân tích source code để hiểu rõ hơn về cách hoạt động của website
   
-  ![](23-42-12.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-42-12.png?raw=true)
 
   - Đoạn code thực hiện nhiệm vụ tạo ra một album mới mà người dùng tạo ra, được gán vào `$_SESSION['dir']`, kiểm tra xem biến phiên `$_SESSION['dir']` đã tồn tại chưa. Nếu chưa, đoạn mã bên trong dấu ***{}*** sẽ được thực hiện. Trong trường hợp này, nó tạo ra một tên thư mục duy nhất bằng cách kết hợp `/var/www/html/upload/` với một chuỗi hex ngẫu nhiên dài 16 byte. Cụ thể, *random_bytes(16)* tạo ra một chuỗi ngẫu nhiên gồm 16 byte và *bin2hex()* sẽ chuyển nó thành chuỗi hex. Minh chứng có thể thấy khi ta tạo một album mới
   
-  ![](23-44-33.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-44-33.png?raw=true)
 
   - `$dir` có giá trị `/var/www/html/upload/. bin2hex(random_bytes(16))` và ta không thể kiểm soát được giá trị này
   - Tiếp theo là đoạn code tạo album
   
-  ![](23-46-06.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-46-06.png?raw=true)
 
   - `$album` có giá trị `$dir . "/" . strtolower($_POST['album'])` --> ta có thể kiểm soát giá trị này thông qua *unstrusted data* `$_POST['album']`
   - Đoạn code thực hiện việc lưu file
 
-  ![](23-49-04.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-49-04.png?raw=true)
 
   - Unsafe method ở đây là hàm *`move_uploaded_file($files["tmp_name"][$i], $newFile)`* sẽ upload file từ `$files["tmp_name"][$i]` vào đường dẫn `$newFile` trên server mà ta có thể kiểm soát được biến $album nên có thể điều hướng file upload vào **DocumentRoot**
   - Vì vậy *unstrusted data* `$_POST['album']` sẽ mang giá trị: **`../..`**
   
-  ![](23-52-23.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-52-23.png?raw=true)
 
-  ![](23-52-36.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-52-36.png?raw=true)
 
   > Thao túng nội dung file *phpinfo()* thành công
 
 - Bây giờ mục tiêu là đọc được nội dung file *secret* được cấu hình trong Dockerfile
 - Payload simple reverse shell như sau:
   
-![](23-54-27.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-54-27.png?raw=true)
 
 - Upload lên server và thao túng param *cmd*
   
-![](23-56-15.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-56-15.png?raw=true)
 
-![](23-56-26.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-56-26.png?raw=true)
 
-![](23-56-57.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-56-57.png?raw=true)
 
 > Đọc nội dung tập tin bí mật thành công
 
@@ -197,7 +197,7 @@ Hệ thống giả lập được build lên như sau:
    
    - Cấu hình Apache để ngăn việc thực thi mã trong thư mục upload
    
-   ![](23-59-21.png)
+   ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/23-59-21.png?raw=true)
 
    - **SetHandler None**: Ngăn Apache xử lý tệp với bất kỳ module nào (như PHP). Đảm bảo các file tải lên chỉ được lưu dưới dạng dữ liệu không thể thực thi.
 
@@ -205,7 +205,7 @@ Hệ thống giả lập được build lên như sau:
 
    - Đảm bảo rằng thư mục upload không có quyền thực thi:
   
-  ![](00-00-53.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-00-53.png?raw=true)
 
 ### 2.2. Web-demo-path-traversal-lfi
 
@@ -219,7 +219,7 @@ Tấn công *Directory Traversal* và *Local File Inclusion (LFI)* qua Apache b�
 
 **Hình ảnh cấu trúc sourcode**
 
-![](00-07-08.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-07-08.png?raw=true)
 
 - **configs** : chứa các cấu hình server
 - **src**: chứa mã nguồn của chương trình, bên trong folder này bao gồm:
@@ -232,23 +232,23 @@ Tấn công *Directory Traversal* và *Local File Inclusion (LFI)* qua Apache b�
 - **Dockerfile**: File này chứa cấu hình để dựng môi trường Docker, mô phỏng máy chủ cho thử nghiệm.
 - Deploy ứng dụng bằng docker
 
-![](00-12-00.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-12-00.png?raw=true)
 
 - Trang web cung cấp 1 ứng dụng chơi game khi nhấn *button* **Start Game**, để có thể chơi được game nhấn phím `Space`
 
-![](00-12-53.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-12-53.png?raw=true)
 
 - Nếu bị va chạm vào các thanh chướng ngại vật màu xanh ván game sẽ kết thúc hiển thị lại số điểm người chơi giành được và điều hướng người chơi sang game 2
 
-![](00-13-32.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-13-32.png?raw=true)
 
 - Khi chuyển đến game 2 thì không chơi được game số 2 này và nhận được thông báo game sắp ra mắt
   
-![](00-14-00.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-14-00.png?raw=true)
 
 - Bây giờ phân tích source để hiểu luồng hoạt động của ứng dụng (file `index.php`):
 
-![](00-14-36.png)
+![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-14-36.png?raw=true)
 
 - Một số thông tin rút ra được từ file trên:
   - Có sự xuất hiện của *untrusted data* là biến `$_GET['game']`
@@ -262,15 +262,15 @@ Tấn công *Directory Traversal* và *Local File Inclusion (LFI)* qua Apache b�
   - Ta có thể tác động vào `$_GET['game']` vì đây là dữ liệu được gửi từ *client*
   - Thử thay đổi giá trị của game thành một file khác cũng trong thư mục *views*
   
-  ![](00-22-47.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-22-47.png?raw=true)
 
-  ![](00-23-05.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-23-05.png?raw=true)
 
   >Ta thấy trang web *render* đúng nội dung của từng file mình vừa `include`
 - Vậy còn những file khác trên server thì sao? Liệu truyền bất kì đường dẫn file nào vào `include` cũng đọc được? Chú ý `$game` đã bị *prefix* bởi `./views/`, ta có thể `include` một file khác không nằm trong thư mục *views* được không? Liệu có thể sử dụng `../` để **Directory Traversal** thoát ra khỏi thư mục này?
 - Thử với file text `/etc/passwd`
   
-  ![](00-25-35.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-25-35.png?raw=true)
 
   >Tấn công *directory traversal* thành công và đọc được file bất kỳ trên hệ thống
 - Tiếp theo như **header** của ứng dụng còn muốn chúng ta tấn công **RCE** vào ứng dụng, còn một điểm nữa là *log* của apache, liệu nó có phải là một điểm yếu để khai thác **RCE** không?
@@ -281,16 +281,16 @@ Tấn công *Directory Traversal* và *Local File Inclusion (LFI)* qua Apache b�
 - Ví dụ một trong các tính năng mà có thể sẽ ghi dữ liệu của user vào nội dung file đó là tính năng **log**. Cụ thể đối với *httpd Apache*, mặc định các request sẽ được ghi log lại ở đường dẫn `/var/log/apache2/access.log`
 - Thông thường khi cài đặt apache người ta sẽ cấu hình 2 file là **access log** và **error log** để theo dõi các request gửi lên web server và điều tra khi có sự cố trong lúc xử lý request. Để xem cấu hình này, ta vào file *000-default.conf*
 
-  ![](00-34-59.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-34-59.png?raw=true)
 
 - Folder lưu trữ file **access.log** là `${APACHE_LOG_DIR}`, mặc định nếu không can thiệp folder đó sẽ là `/var/log/apache2` hay `/var/log/apache2/access.log`
 - Các dòng log được lưu trữ trong **access.log** sẽ trông như sau:
 
-  ![](00-36-43.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-36-43.png?raw=true)
 
 - Cấu trúc của một dòng *log*:
 
-  ![](00-37-32.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-37-32.png?raw=true)
 
 1. **IP Client**
    - 172.17.0.1: Địa chỉ IP của client gửi yêu cầu tới server. 
@@ -311,22 +311,22 @@ Tấn công *Directory Traversal* và *Local File Inclusion (LFI)* qua Apache b�
 các trường *header request* mà có thể quản lý và can thiệp được. Vậy nếu ta đổi 1 trong 3 trường thành đoạn code `<?php phpinfo(); ?>` thì sao?
 - **Directiory Traversal** đọc file *access.log*
   
-  ![](00-52-13.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-52-13.png?raw=true)
 
 - Sửa đổi 1 trong 3 trường có thể là các *unstruted data*
   
-  ![](00-53-00.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/00-53-00.png?raw=true)
 
   > Đọc nội dung file *phpinfo()* thành công 
 - Tiến hành khai thác tương tự như [web demo path traversal](#21-web-demo-path-traversal) với payload `{<?php system($_GET['cmd']); ?>}`
   
-  ![](01-01-37.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/01-01-37.png?raw=true)
 
 - Cuối cùng hiển thị và đọc nội dung file bí mật ở thư mục gốc 
   
-  ![](01-02-14.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/01-02-14.png?raw=true)
 
-  ![](01-02-41.png)
+  ![](https://github.com/luckyman2907/Apache-Directory-Traversal-Demo/blob/main/images/01-02-41.png?raw=true)
 
   > RCE thành công.
 
